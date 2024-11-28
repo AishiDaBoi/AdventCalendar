@@ -54,14 +54,11 @@ public class AdventCalendarIT extends Application {
     @Override
     public void start(Stage primaryStage) {
         // GridPane für die Buttons
-        GridPane gridPane = new GridPane();
-        gridPane.setHgap(10); // Horizontaler Abstand zwischen Buttons
-        gridPane.setVgap(10); // Vertikaler Abstand zwischen Buttons
-        gridPane.setAlignment(Pos.CENTER); // Zentriert die Buttons in der GridPane
+        GridPane gridPane = createGridPane();
 
         // Buttons für die 24 Türchen hinzufügen
         for (int i = 1; i <= 24; i++) {
-            Button button = new Button("Tür " + i);
+            Button button = createButton(i);
             int index = i - 1; // Index für die spezifische Frage
             button.setOnAction(e -> openContentWindow(index));
             gridPane.add(button, (i - 1) % 6, (i - 1) / 6); // 6 Spalten
@@ -72,15 +69,37 @@ public class AdventCalendarIT extends Application {
         root.setAlignment(Pos.CENTER);
 
         // Hauptszene
-        Scene scene = new Scene(root, 380, 200); // Größeres Fenster
+        Scene scene = new Scene(root, 600, 400); // Größeres Fenster
         primaryStage.setTitle("Adventskalender IT-Rätsel");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
+    private GridPane createGridPane() {
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(20); // Horizontaler Abstand zwischen Buttons
+        gridPane.setVgap(20); // Vertikaler Abstand zwischen Buttons
+        gridPane.setAlignment(Pos.CENTER); // Zentriert die Buttons in der GridPane
+        return gridPane;
+    }
+
+    private Button createButton(int day) {
+        Button button = new Button("Tür " + day);
+        button.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-border-radius: 10px; -fx-padding: 10px;");
+        button.setFont(javafx.scene.text.Font.font("Arial", 16));
+        button.setPrefWidth(120);
+        button.setPrefHeight(60);
+
+        // Hover-Effekt
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-border-radius: 10px; -fx-padding: 10px;"));
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-border-radius: 10px; -fx-padding: 10px;"));
+
+        return button;
+    }
+
     private void openContentWindow(int index) {
         Stage contentStage = new Stage();
-        VBox contentBox = new VBox(10);
+        VBox contentBox = new VBox(15);
         contentBox.setStyle("-fx-padding: 20; -fx-alignment: center;");
 
         // Frage und Antwort aus den Arrays holen
@@ -89,9 +108,14 @@ public class AdventCalendarIT extends Application {
 
         // Anzeige der Frage
         Text riddleText = new Text(riddle);
+        riddleText.setStyle("-fx-font-size: 18px; -fx-font-family: 'Arial';");
+
         TextField answerField = new TextField();
         answerField.setPromptText("Antwort hier eingeben");
+        answerField.setStyle("-fx-padding: 10px; -fx-font-size: 16px;");
+
         Button submitButton = new Button("Prüfen");
+        submitButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-border-radius: 10px; -fx-padding: 10px;");
         submitButton.setOnAction(e -> {
             if (answerField.getText().equalsIgnoreCase(correctAnswer)) {
                 showAlert(AlertType.INFORMATION, "Richtig!", "Das war korrekt!");
